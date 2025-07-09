@@ -1,7 +1,7 @@
 ---
 # the default layout is 'page'
 icon: fas fa-info-circle
-order: 4
+order: 99
 ---
 
 I'm a machine learning research engineer with a strong software engineering background.

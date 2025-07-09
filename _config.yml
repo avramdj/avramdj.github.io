@@ -14,9 +14,9 @@ timezone:
 # jekyll-seo-tag settings › https://github.com/jekyll/jekyll-seo-tag/blob/master/docs/usage.md
 # ↓ --------------------------
 
-title: Avram's Blog # the main title
+title: nord's blog # the main title
 
-tagline: All things ML # it will display as the subtitle
+tagline: thoughts and notes # it will display as the subtitle
 
 description: >- # used by seo meta and the atom feed
   A minimal, responsive and feature-rich Jekyll theme for technical writing.
@@ -34,7 +34,7 @@ twitter:
 social:
   # Change to your full name.
   # It will be displayed as the default author of the posts and the copyright owner in the Footer
-  name: avramdj
+  name: nord
   email: avramdjordjevic2 [dontspam] gmail.com # change to your email address
   links:
     # The first element serves as the copyright owner's link
@@ -170,6 +170,9 @@ collections:
   tabs:
     output: true
     sort_by: order
+  pile:
+    output: true
+    sort_by: date
 
 defaults:
   - scope:
@@ -182,6 +185,12 @@ defaults:
       # DO NOT modify the following parameter unless you are confident enough
       # to update the code of all other post links in this project.
       permalink: /posts/:title/
+  - scope:
+      path: "_pile"
+      type: pile
+    values:
+      layout: post
+      comments: false
   - scope:
       path: _drafts
     values:
