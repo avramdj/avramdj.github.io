@@ -3,8 +3,8 @@ title: Booting . . .
 description: "Running startup script"
 date: 2024-03-20
 image: assets/lain-rig.jpeg
-toc: false
 comments: false
+toc: false
 ---
 
 <!-- Insert a loading kind of thingy here markdown -->
