@@ -22,11 +22,11 @@ refactor: true
 
 {%- assign notes = site.pile | where_exp: 'n', 'n.hidden != true' -%}
 
-{%- comment -%} tertiary sort: title A→Z {%- endcomment -%}
-{%- assign notes = notes | sort: 'title' -%}
-
 {%- comment -%} secondary sort: date newest→oldest {%- endcomment -%}
 {%- assign notes = notes | sort: 'date' -%}
+
+{%- comment -%} tertiary sort: title A→Z {%- endcomment -%}
+{%- assign notes = notes | sort: 'title' -%}
 
 {%- comment -%} primary sort: weight low→high {%- endcomment -%}
 {%- assign notes = notes | sort: 'weight' -%}

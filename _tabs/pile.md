@@ -7,10 +7,5 @@ order: 100
 opacity: low
 ---
 
-> You shouldn't be here. \
-> But you are now. \
-> Beware.
-{: .prompt-danger}
-
 > Welcome to the Pile.
-{: .prompt-info}
+{: .prompt-danger}

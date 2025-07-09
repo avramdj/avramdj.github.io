@@ -23,12 +23,6 @@ script_includes:
 
     <div class="post-meta text-muted">
 
-      <div class="mb-4">
-          <blockquote class="prompt-warning">
-            <p>You are in the Pile. This is a random note.</p>
-          </blockquote>
-      </div>
-
       {% if page.image %}
         {% capture src %}src="{{ page.image.path | default: page.image }}"{% endcapture %}
         {% capture class %}class="preview-img{% if page.image.no_bg %}{{ ' no-bg' }}{% endif %}"{% endcapture %}
@@ -87,6 +81,9 @@ script_includes:
   {% endif %}
 
   <div class="content">
+    <blockquote class="prompt-warning">
+      <p>You are in the Pile. This is a random note.</p>
+    </blockquote>
     {{ content }}
   </div>
 
