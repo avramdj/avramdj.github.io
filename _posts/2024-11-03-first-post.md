@@ -2,7 +2,7 @@
 title: Booting . . .
 description: "Running startup script"
 date: 2024-03-20
-image: assets/lain-rig.jpeg
+image: assets/img/lain-rig.jpeg
 comments: false
 toc: false
 ---
