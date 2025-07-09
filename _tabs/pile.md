@@ -2,8 +2,9 @@
 layout: pile
 title: The Pile
 description: "A collection of notes"
-icon: fas fa-info-circle
-order: 4
+icon: fas fa-exclamation-triangle
+order: 100
+opacity: low
 ---
 
 > You shouldn't be here. \

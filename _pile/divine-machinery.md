@@ -1,4 +1,5 @@
 ---
+layout: note
 title: TMG
 description: Superintelligence and divine machinery
 # badge_text: "danger"
