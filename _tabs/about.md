@@ -8,12 +8,11 @@ I'm a machine learning research engineer with a strong software engineering back
 
 I really love building things. I spend my time doing independent research, trying to improve the state-of-the-art in ML, and tinkering with emerging technologies.
 
-Key interests:
+Some interests:
 
-- Transformers, VAEs, multimodality.
-- More broadly - LLMs, diffusion, RL, SSL.
+- Transformers, VAEs, multimodality, LLMs, diffusion, RL, SSL.
 - Improving capabilities via mechanistic interpretability
-- Classical ML algorithms and their modern variants
+- Mathematical foundations of ML
 - Software architecture and system design
 - Performance optimization and distributed systems
 - DevOps and automation

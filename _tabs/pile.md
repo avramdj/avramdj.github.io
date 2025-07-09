@@ -6,5 +6,10 @@ icon: fas fa-info-circle
 order: 4
 ---
 
-> You shouldn't be here, but you're here now. Beware.
-{: .prompt-danger }
+> You shouldn't be here. \
+> But you are now. \
+> Beware.
+{: .prompt-danger}
+
+> Welcome to the Pile.
+{: .prompt-info}
