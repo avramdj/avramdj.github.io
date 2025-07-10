@@ -23,15 +23,69 @@ A wizard holds secret knowledge and wields it. That pen (or Apple Pen) is litera
 
 # 2. Math formulae are divine runic sigils
 
-Behold the Navier–Stokes runes:
+Behold the derivation of the Navier–Stokes equations:
 
-$$
+<!-- $$
 \frac{\partial \rho}{\partial t} + \nabla \cdot (\rho \mathbf{v}) = 0
 $$
 
 $$
 \rho \Bigl(\frac{\partial \mathbf{v}}{\partial t} + (\mathbf{v}\cdot \nabla)\mathbf{v}\Bigr) = -\nabla p + \mu \nabla^2 \mathbf{v} + \rho \mathbf{g}
+$$ -->
+
 $$
+\frac{\partial \rho}{\partial t} + \nabla\cdot(\rho\,\mathbf v) = 0
+$$
+
+$$
+\frac{\partial(\rho\,\mathbf v)}{\partial t} + \nabla\cdot\bigl(\rho\,\mathbf v\otimes\mathbf v\bigr)
+= \nabla\cdot\boldsymbol\sigma + \rho\,\mathbf f
+$$
+
+$$
+\rho = \mathrm{const}
+$$
+
+$$
+\nabla\cdot\mathbf v = 0
+$$
+
+$$
+\boldsymbol\sigma = -\,p\,\mathbf I + 2\mu\,\mathbf D + \lambda\,(\nabla\cdot\mathbf v)\,\mathbf I
+$$
+
+$$
+\mathbf D = \tfrac12\bigl(\nabla\mathbf v + (\nabla\mathbf v)^{T}\bigr)
+$$
+
+$$
+\nabla\cdot\mathbf v = 0 \;\;\Longrightarrow\;\;
+\boldsymbol\sigma = -\,p\,\mathbf I + 2\mu\,\mathbf D
+$$
+
+$$
+\nabla\cdot\boldsymbol\sigma = -\,\nabla p + \mu\,\Delta\mathbf v
+$$
+
+$$
+\frac{\partial(\rho\,\mathbf v)}{\partial t} + \nabla\cdot\bigl(\rho\,\mathbf v\otimes\mathbf v\bigr)
+= -\,\nabla p + \mu\,\Delta\mathbf v + \rho\,\mathbf f
+$$
+
+$$
+\rho\Bigl(\frac{\partial\mathbf v}{\partial t} + (\mathbf v\cdot\nabla)\mathbf v\Bigr)
+= -\,\nabla p + \mu\,\Delta\mathbf v + \rho\,\mathbf f
+$$
+
+$$
+\frac{\partial\mathbf v}{\partial t} + (\mathbf v\cdot\nabla)\mathbf v
+= -\frac{1}{\rho}\,\nabla p + \nu\,\Delta\mathbf v + \mathbf f
+$$
+
+$$
+\nabla\cdot\mathbf v = 0
+$$
+
 
 While deciphering these runes, you’re challenging the cosmos. At first, it’s chaos---a vortex of arcana—but then it clicks. A snap of insight. You tamed the vortex. You just acquired another runic code.
 
