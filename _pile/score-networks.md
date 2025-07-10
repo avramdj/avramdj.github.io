@@ -1,5 +1,4 @@
 ---
-layout: note
 title: Score networks
 description: The vector field of a score network
 # badge_text: "danger"
@@ -16,6 +15,6 @@ $$
 $$
 
 
-![Score networks](../assets/img/ncsn.png)
+![Score networks](/assets/img/ncsn.png)
 
-![Langevin sampling](../assets/img/ncsn-sampling.gif)
+![Langevin sampling](/assets/img/ncsn-sampling.gif)

@@ -3,7 +3,7 @@ layout: pile
 title: The Pile
 description: "A collection of notes"
 icon: fas fa-exclamation-triangle
-order: 100
+order: 1000
 opacity: low
 ---
 

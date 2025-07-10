@@ -1,7 +1,6 @@
 ---
-layout: note
-title: How to study math by LARPing as a wizard
-description: A portal for self-gaslighting
+title: How to study math by Wizardmaxxing
+description: Larping as a wizard is a good way to study math
 date: 2025-07-10
 math: true
 ---
@@ -15,8 +14,8 @@ Before we get started, play this in the background.
 
 # 1. You’re literally a fuckin’ wizard, dawg
 
-You’re not an undergrad who’ll get bitch-slapped by Euler or Gauss---you *are* the arcane scholar.  
-A wizard holds secret knowledge and wields it. Your quill is that Apple Pen.
+You’re not an undergrad who’ll get bitch-slapped by Euler or Gauss---you're a wizard.  
+A wizard holds secret knowledge and wields it. That pen (or Apple Pen) is literally your quill right now.
 
 # 2. Math formulae are divine runic sigils
 
@@ -30,13 +29,13 @@ $$
 \rho \Bigl(\frac{\partial \mathbf{v}}{\partial t} + (\mathbf{v}\cdot \nabla)\mathbf{v}\Bigr) = -\nabla p + \mu \nabla^2 \mathbf{v} + \rho \mathbf{g}
 $$
 
-While deciphering these runes, you’re channeling the cosmos. At first, it’s chaos---a vortex of arcana—but then it *clicks*. That snap of insight? You tamed the vortex. You just acquired another runic code.
+While deciphering these runes, you’re challenging the cosmos. At first, it’s chaos---a vortex of arcana—but then it clicks. A snap of insight. You tamed the vortex. You just acquired another runic code.
 
 # 3. Detach yourself from reality and schizomaxx
 
 You’re not in the 21st century. The year is 171 after the death of Himmel the Hero.  
-Your lecture hall is a great hall of mystics. Every theorem you learn, you *discover*, as if whispered by wizards long gone.  
-You converse with Archimedes and Hypatia in your mind’s eye—and you keep pace.
+Your lecture hall is The Great Hall of Mystics. Every theorem you learn, you *discover*, as if whispered by wizards long gone.  
+You converse with Archimedes and Hypatia in your mind’s eye---and their secrets are being etched into your soul.
 
 # 4. GTFO this blog and pick up the scroll
 
