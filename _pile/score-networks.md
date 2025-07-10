@@ -7,6 +7,9 @@ date: 2025-07-09
 math: true
 ---
 
+> This is a random note from the Pile.
+{: .prompt-warning}
+
 Sampling via Langevin dynamics:
 
 $$

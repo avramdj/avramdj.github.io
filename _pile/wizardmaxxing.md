@@ -5,6 +5,10 @@ date: 2025-07-10
 math: true
 ---
 
+> This is a random note from the Pile.
+{: .prompt-warning}
+
+
 > You should leave if you're prone to psychosis.
 {: .prompt-danger}
 
