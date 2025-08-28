@@ -1,6 +1,6 @@
 ---
 title: "Exploring the gradient noise scale"
-description: "An expansion of \"Why Momentum Really Works\" by Gabriel Goh"
+description: "A demonstration of critical batch size, and a tribute to open-access machine learning."
 date: 2025-08-28
 image: 
     path: assets/img/gradient.png
@@ -13,9 +13,9 @@ tags: [math, optimization, visualization]
 math: true
 ---
 
-This is heavily inspired by ["Why Momentum Really Works"](https://distill.pub/2017/momentum) by Gabriel Goh and [An Empirical Model of Large-Batch Training
-](https://arxiv.org/abs/1812.06162).
+This visualization takes deep inspiration from Gabriel Goh’s ["Why Momentum Really Works"](https://distill.pub/2017/momentum). 
 
+It is my tribute to [Distill](https://distill.pub/), a journal that profoundly shaped my perspective as a young aspiring researcher in the late 2010s, but which now rests on indefinite hiatus.
 
 <style>
   .gradient-container {
@@ -279,6 +279,19 @@ This is heavily inspired by ["Why Momentum Really Works"](https://distill.pub/20
     margin-top: 5px;
   }
 
+  /* Batch tick marker at 50% (critical batch size) */
+  .batch-tick {
+    position: absolute;
+    left: 50%;
+    top: -4px;
+    bottom: -4px;
+    width: 2px;
+    background: var(--border-color);
+    opacity: 0.8;
+    border-radius: 1px;
+    pointer-events: none;
+  }
+
   .lr-scale-ticks {
     display: flex;
     justify-content: space-between;
@@ -336,6 +349,17 @@ This is heavily inspired by ["Why Momentum Really Works"](https://distill.pub/20
       </div>
     </div>
 
+    <!-- Batch Size Scale (drives % noise) -->
+    <div class="lr-scale-container" style="margin-top: 10px;">
+      <div class="lr-scale-label">Batch Size</div>
+      <div class="lr-scale-wrapper" style="position: relative;">
+        <div class="batch-tick"></div>
+        <input type="range" id="batch-slider" class="lr-scale-slider" min="0" max="10000" value="5000">
+      </div>
+      <div class="lr-scale-value"><span id="batch-scale-value">B = 2048</span></div>
+      <div class="lr-scale-value" id="batch-critical-note" style="display: none;"><strong>crossed critical batch size</strong></div>
+    </div>
+
     
   </div>
   <div class="controls-panel">
@@ -378,7 +402,7 @@ This is heavily inspired by ["Why Momentum Really Works"](https://distill.pub/20
         <input type="range" id="noise-slider" min="0" max="100" value="0">
       </div>
     </div>
-    <div class="control-group">
+    <div class="control-group" id="pct-noise-control-group">
       <label for="pct-noise-input">% Noise</label>
       <div class="input-slider-group">
         <input type="number" id="pct-noise-input" min="0" max="1" value="0.2" step="0.01">
@@ -418,12 +442,16 @@ This is heavily inspired by ["Why Momentum Really Works"](https://distill.pub/20
           <input type="number" id="noise-seed-input" min="0" max="999" value="42" step="1" style="width: 80px;">
         </div>
         <div class="control-group">
+          <label for="alpha-b1-input">Max % Noise at B=1</label>
+          <input type="number" id="alpha-b1-input" min="0" max="1" value="0.60" step="0.01" style="width: 80px;">
+        </div>
+        <div class="control-group">
           <label for="converge-threshold-input">Convergence Threshold</label>
           <input type="number" id="converge-threshold-input" min="0.001" max="1" value="0.0015" step="0.001" style="width: 80px;">
         </div>
         <div class="control-group">
           <label for="max-steps-input">Max Steps (Convergence)</label>
-          <input type="number" id="max-steps-input" min="50" max="1000" value="300" step="10" style="width: 80px;">
+          <input type="number" id="max-steps-input" min="50" max="1000" value="600" step="10" style="width: 80px;">
         </div>
     </div>
   </div>
@@ -460,6 +488,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const warmupSlider = document.getElementById('warmup-slider');
     const noiseSlider = document.getElementById('noise-slider');
     const pctNoiseSlider = document.getElementById('pct-noise-slider');
+    const batchSlider = document.getElementById('batch-slider');
     const resetButton = document.getElementById('reset-gradient-button');
     const decayNoneBtn = document.getElementById('decay-none');
     const decayLinearBtn = document.getElementById('decay-linear');
@@ -483,9 +512,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const warmupInput = document.getElementById('warmup-input');
     const noiseInput = document.getElementById('noise-input');
     const pctNoiseInput = document.getElementById('pct-noise-input');
+    const pctNoiseGroup = document.getElementById('pct-noise-control-group');
     const noiseSeedInput = document.getElementById('noise-seed-input');
+    const alphaB1Input = document.getElementById('alpha-b1-input');
     const convergeThresholdInput = document.getElementById('converge-threshold-input');
     const maxStepsInput = document.getElementById('max-steps-input');
+    const batchScaleValue = document.getElementById('batch-scale-value');
+    const batchCriticalNote = document.getElementById('batch-critical-note');
     
     /* Starting position (controlled by click/drag) */
     let startX = 1.3;
@@ -573,25 +606,36 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
             
-            /* Apply separate additive and percentage noise */
+            /* Percentage noise: linear interpolation of direction (0=grad dir, 1=random dir) */
             let noisyGx = gx, noisyGy = gy;
-            
-            /* Additive noise: fixed magnitude */
+            if (pctNoise > 0) {
+                const gradMagnitude = Math.hypot(gx, gy);
+                if (gradMagnitude > 0) {
+                    const gxUnit = gx / gradMagnitude;
+                    const gyUnit = gy / gradMagnitude;
+                    const theta = 2 * Math.PI * rngPct.next();
+                    const rx = Math.cos(theta);
+                    const ry = Math.sin(theta);
+                    let mixX = (1 - pctNoise) * gxUnit + pctNoise * rx;
+                    let mixY = (1 - pctNoise) * gyUnit + pctNoise * ry;
+                    const mixNorm = Math.hypot(mixX, mixY) || 1;
+                    mixX /= mixNorm;
+                    mixY /= mixNorm;
+                    noisyGx = mixX * gradMagnitude;
+                    noisyGy = mixY * gradMagnitude;
+                } else {
+                    noisyGx = 0;
+                    noisyGy = 0;
+                }
+            }
+
+            /* Additive noise: fixed magnitude added on top */
             if (additiveNoise > 0) {
                 const additiveScale = 5.0; /* 10x bigger than before (was 0.5) */
                 const noiseX = (rngAdditive.next() - 0.5) * 2;
                 const noiseY = (rngAdditive.next() - 0.5) * 2;
                 noisyGx += additiveNoise * additiveScale * noiseX;
                 noisyGy += additiveNoise * additiveScale * noiseY;
-            }
-            
-            /* Percentage noise: scales with gradient magnitude */
-            if (pctNoise > 0) {
-                const gradMagnitude = Math.sqrt(gx*gx + gy*gy);
-                const noiseX = (rngPct.next() - 0.5) * 2;
-                const noiseY = (rngPct.next() - 0.5) * 2;
-                noisyGx += pctNoise * gradMagnitude * noiseX;
-                noisyGy += pctNoise * gradMagnitude * noiseY;
             }
             
             /* Apply learning rate warmup and decay */
@@ -822,7 +866,10 @@ document.addEventListener('DOMContentLoaded', function () {
         const useConvergence = untilConvergeToggle.checked;
         const convergeThreshold = parseFloat(convergeThresholdInput.value);
         const maxSteps = parseInt(maxStepsInput.value);
-        const path = gradientDescent(startX, startY, steps, lr, beta1, beta2, warmupStepsInput, additiveNoise, pctNoise, lrDecayMode, noiseSeed, useConvergence, convergeThreshold, maxSteps, optimizerMode);
+        /* Compute pct noise from batch size */
+        const B = getBatchFromSlider();
+        const computedPct = computeAlphaFromBatch(B);
+        const path = gradientDescent(startX, startY, steps, lr, beta1, beta2, warmupStepsInput, additiveNoise, computedPct, lrDecayMode, noiseSeed, useConvergence, convergeThreshold, maxSteps, optimizerMode);
         
         if (path.length > 1) {
             /* Draw individual line segments with transparency */
@@ -944,7 +991,8 @@ document.addEventListener('DOMContentLoaded', function () {
         if (parseInt(warmupSlider.value) > maxWarm) warmupSlider.value = maxWarm;
         warmupInput.value = warmupSlider.value;
         noiseInput.value = (noiseSlider.value / 100).toFixed(2);
-        pctNoiseInput.value = (pctNoiseSlider.value / 100).toFixed(2);
+        /* pct noise is driven by batch size */
+        syncPctNoiseToBatch();
         drawVisualization();
     }
     
@@ -958,8 +1006,50 @@ document.addEventListener('DOMContentLoaded', function () {
         if (parseInt(warmupInput.value) > maxWarm) warmupInput.value = maxWarm;
         warmupSlider.value = warmupInput.value;
         noiseSlider.value = Math.round(parseFloat(noiseInput.value) * 100);
-        pctNoiseSlider.value = Math.round(parseFloat(pctNoiseInput.value) * 100);
+        /* pct noise is driven by batch size */
+        syncPctNoiseToBatch();
         drawVisualization();
+    }
+
+    /* Batch-driven percentage noise: 0 at B=Bc, adjustable at B=1 */
+    const CRITICAL_BATCH = 4096; /* midpoint of slider */
+    function getAlphaMaxAtB1() { return Math.max(0, Math.min(1, parseFloat(alphaB1Input.value) || 0)); }
+    function getBatchFromSlider() {
+        /* Base-2 exponential mapping: slider in [0,10000] → B in [1, Bmax], midpoint maps to Bc */
+        const t = Math.max(0, Math.min(1, parseInt(batchSlider.value) / 10000));
+        const Bc = getCriticalBatch();
+        const Bmax = Bc * Bc; /* midpoint t=0.5 gives sqrt(Bmax)=Bc */
+        const log2Bmax = Math.log2(Bmax);
+        const log2B = t * log2Bmax;
+        const B = Math.pow(2, log2B);
+        return Math.max(1, Math.round(B));
+    }
+    function getCriticalBatch() {
+        return CRITICAL_BATCH;
+    }
+    function computeAlphaFromBatch(B) {
+        const Bc = getCriticalBatch();
+        if (B >= Bc) return 0.0; /* at/above critical: zero noise */
+        /* SNR-matched mapping normalized so alpha(1)=alpha1 and alpha(Bc)=0 */
+        const alpha1 = getAlphaMaxAtB1();
+        const rho = (b) => 1 / Math.sqrt(1 + Bc / Math.max(1, b));
+        const rho1 = rho(1);
+        const rhoc = rho(Bc); /* = 1/sqrt(2) */
+        const denom = Math.max(1e-9, (rhoc - rho1));
+        const t = (rhoc - rho(B)) / denom; /* t=1 at B=1, t=0 at B=Bc */
+        const val = alpha1 * Math.max(0, Math.min(1, t));
+        return Math.max(0, Math.min(1, val));
+    }
+    function syncPctNoiseToBatch() {
+        const B = getBatchFromSlider();
+        const alpha = computeAlphaFromBatch(B);
+        const stepsUsed = untilConvergeToggle.checked ? parseInt(maxStepsInput.value) : parseInt(stepsInput.value);
+        const samples = B * stepsUsed;
+        batchScaleValue.textContent = `Batch size = ${B} · Samples seen = ${samples}`;
+        batchCriticalNote.style.display = B >= getCriticalBatch() ? 'block' : 'none';
+        /* reflect computed alpha in % noise controls */
+        pctNoiseInput.value = alpha.toFixed(2);
+        pctNoiseSlider.value = Math.round(alpha * 100);
     }
     
     function setInitialValues() {
@@ -976,9 +1066,12 @@ document.addEventListener('DOMContentLoaded', function () {
         pctNoiseInput.value = 0.2;
         noiseSeedInput.value = 42;
         convergeThresholdInput.value = 0.0015;
-        maxStepsInput.value = 300;
-        untilConvergeToggle.checked = false;
+        maxStepsInput.value = 600;
+        untilConvergeToggle.checked = true;
+        /* Set batch slider to midpoint so B = Bc */
+        batchSlider.value = 5000;
         toggleStepsControls();
+        syncPctNoiseToBatch();
         updateFromInputs();
     }
     
@@ -1006,6 +1099,16 @@ document.addEventListener('DOMContentLoaded', function () {
     
     /* Learning rate scale listener */
     lrScaleSlider.addEventListener('input', updateLrFromScale);
+    /* Batch slider listener */
+    batchSlider.addEventListener('input', function() {
+        syncPctNoiseToBatch();
+        drawVisualization();
+    });
+    /* Alpha at B=1 listener */
+    alphaB1Input.addEventListener('input', function() {
+        syncPctNoiseToBatch();
+        drawVisualization();
+    });
     
     /* Convergence toggle listener */
     untilConvergeToggle.addEventListener('change', toggleStepsControls);
@@ -1157,4 +1260,4 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 
-
+To explore the nuances of the relationship between critical batch size and learning rate, I recommend reading one of the landmark papers by Gao et al. ["An Empirical Model of Large-Batch Training"](https://arxiv.org/abs/1812.06162)
